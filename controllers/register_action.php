@@ -2,6 +2,7 @@
 session_start();
 
 require_once "../config/db_connect.php";
+require_once "../models/UserModel.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -41,56 +42,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $check_sql = "SELECT id FROM users WHERE username = ? OR email = ?";
-    $check_stmt = $conn->prepare($check_sql);
-    $check_stmt->bind_param("ss", $username, $email);
-    $check_stmt->execute();
-    $check_result = $check_stmt->get_result();
-
-    if ($check_result->num_rows > 0) {
+    if (checkUserExists($conn, $username, $email)) {
         $_SESSION["error"] = "Username or email already exists.";
-        $check_stmt->close();
         header("Location: ../register.php");
         exit();
     }
 
-    $check_stmt->close();
-
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
     $dietary_json = json_encode($dietary_prefs);
-    $role = "user";
-    $is_active = 1;
-    $chef_verified = 0;
 
-    $insert_sql = "INSERT INTO users 
-        (name, username, email, password_hash, role, dietary_prefs, is_active, chef_verified) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $new_user_id = registerUser($conn, $name, $username, $email, $password_hash, $dietary_json);
 
-    $insert_stmt = $conn->prepare($insert_sql);
-    $insert_stmt->bind_param(
-        "ssssssii",
-        $name,
-        $username,
-        $email,
-        $password_hash,
-        $role,
-        $dietary_json,
-        $is_active,
-        $chef_verified
-    );
-
-    if ($insert_stmt->execute()) {
-        $_SESSION["user_id"] = $insert_stmt->insert_id;
+    if ($new_user_id != false) {
+        $_SESSION["user_id"] = $new_user_id;
         $_SESSION["name"] = $name;
         $_SESSION["username"] = $username;
-        $_SESSION["role"] = $role;
+        $_SESSION["role"] = "user";
 
-        $insert_stmt->close();
         header("Location: ../user/dashboard.php");
         exit();
     } else {
         $_SESSION["error"] = "Registration failed. Please try again.";
-        $insert_stmt->close();
         header("Location: ../register.php");
         exit();
     }
