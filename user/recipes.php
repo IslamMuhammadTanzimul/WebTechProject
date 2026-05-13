@@ -103,4 +103,9 @@ $diet_types = getDietTypes($conn);
 
 </div>
 
+<div id="recipe-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+</div>
+
+<script src="../assets/js/recipes.js"></script>
+
 <?php include "../includes/footer.php"; ?>
