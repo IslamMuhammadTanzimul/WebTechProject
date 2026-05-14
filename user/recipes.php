@@ -54,7 +54,7 @@ $diet_types = getDietTypes($conn);
 <div id="recipe-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
 
     <?php if (empty($recipes)): ?>
-        <div class="card">
+        <div class="card" style="grid-column: 1 / -1; text-align: center;">
             <p>No recipes published yet. Check back soon!</p>
         </div>
     <?php else: ?>
@@ -101,9 +101,6 @@ $diet_types = getDietTypes($conn);
         <?php endforeach; ?>
     <?php endif; ?>
 
-</div>
-
-<div id="recipe-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
 </div>
 
 <script src="../assets/js/recipes.js"></script>

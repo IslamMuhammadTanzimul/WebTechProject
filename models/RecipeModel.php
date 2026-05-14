@@ -6,7 +6,7 @@
  */
 function getPublishedRecipes($conn, $limit = 20)
 {
-    $sql = "SELECT r.id, r.title, r.difficulty, r.prep_time_mins, r.cook_time_mins, r.view_count, r.is_chef_pick,
+    $sql = "SELECT r.id, r.title, r.difficulty, r.prep_time_mins, r.cook_time_mins, r.is_chef_pick, r.view_count,
                    u.name as author_name, u.chef_verified, c.name as cuisine_name, c.flag_emoji
             FROM recipes r
             JOIN users u ON r.author_id = u.id
@@ -64,5 +64,94 @@ function getDietTypes($conn)
         }
     }
     return $diet_types;
+}
+
+/**
+ * Fetch a single recipe by its ID with all author and category details.
+ */
+function getRecipeById($conn, $recipe_id)
+{
+    $sql = "SELECT r.*, u.name as author_name, u.chef_verified, u.id as chef_id, c.name as cuisine_name, c.flag_emoji, d.name as diet_name
+            FROM recipes r
+            JOIN users u ON r.author_id = u.id
+            LEFT JOIN cuisines c ON r.cuisine_id = c.id
+            LEFT JOIN diet_types d ON r.diet_type_id = d.id
+            WHERE r.id = ?";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt)
+        return false;
+
+    $stmt->bind_param("i", $recipe_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $recipe = $result->fetch_assoc();
+    $stmt->close();
+
+    return $recipe;
+}
+
+/**
+ * Fetch all ingredients for a specific recipe, ordered correctly.
+ */
+function getRecipeIngredients($conn, $recipe_id)
+{
+    $sql = "SELECT * FROM ingredients WHERE recipe_id = ? ORDER BY order_index ASC";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt)
+        return [];
+
+    $stmt->bind_param("i", $recipe_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $ingredients = [];
+    while ($row = $result->fetch_assoc()) {
+        $ingredients[] = $row;
+    }
+    $stmt->close();
+    return $ingredients;
+}
+
+/**
+ * Fetch all preparation steps for a specific recipe, ordered correctly.
+ */
+function getRecipeSteps($conn, $recipe_id)
+{
+    $sql = "SELECT * FROM steps WHERE recipe_id = ? ORDER BY step_order ASC";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt)
+        return [];
+
+    $stmt->bind_param("i", $recipe_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $steps = [];
+    while ($row = $result->fetch_assoc()) {
+        $steps[] = $row;
+    }
+    $stmt->close();
+    return $steps;
+}
+
+/**
+ * Fetch nutrition information for a specific recipe.
+ */
+function getRecipeNutrition($conn, $recipe_id)
+{
+    $sql = "SELECT * FROM nutrition_info WHERE recipe_id = ?";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt)
+        return false;
+
+    $stmt->bind_param("i", $recipe_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $nutrition = $result->fetch_assoc();
+    $stmt->close();
+    return $nutrition;
 }
 ?>
