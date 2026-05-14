@@ -39,25 +39,25 @@ if (!empty($search)) {
     $searchParam = "%" . $search . "%";
     $params[] = $searchParam;
     $params[] = $searchParam;
-    $types .= "ss";
+    $types .= "ss"; // Correctly appending string types
 }
 
 if ($cuisine > 0) {
     $sql .= " AND r.cuisine_id = ?";
     $params[] = $cuisine;
-    $types .= "i";
+    $types .= "i"; // Correctly appending integer type
 }
 
 if ($diet > 0) {
     $sql .= " AND r.diet_type_id = ?";
     $params[] = $diet;
-    $types .= "i";
+    $types .= "i"; // Correctly appending integer type
 }
 
 if (!empty($difficulty)) {
     $sql .= " AND r.difficulty = ?";
     $params[] = $difficulty;
-    $types .= "s";
+    $types .= "s"; // Correctly appending string type
 }
 
 $sql .= " ORDER BY r.created_at DESC";
@@ -72,7 +72,7 @@ if (!$stmt) {
 }
 
 // Bind parameters dynamically if any exist
-// The ... operator (splat operator) unpacks the array into individual arguments
+// The ... operator unpacks the array into individual arguments
 if (!empty($params)) {
     $stmt->bind_param($types, ...$params);
 }
