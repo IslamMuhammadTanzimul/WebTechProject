@@ -5,6 +5,7 @@ require_once "../includes/auth.php";
 require_once "../config/db_connect.php";
 require_once "../models/RecipeModel.php";
 require_once "../models/BookmarkModel.php";
+require_once "../models/ReviewModel.php"; // Added Review Model
 
 // Protect the route
 require_role("user", $base_url);
@@ -35,8 +36,12 @@ $ingredients = getRecipeIngredients($conn, $recipe_id);
 $steps = getRecipeSteps($conn, $recipe_id);
 $nutrition = getRecipeNutrition($conn, $recipe_id);
 
-// Check if current user has already bookmarked this recipe
+// Check states for the current user
 $is_bookmarked = isBookmarked($conn, $user_id, $recipe_id);
+$has_reviewed = hasUserReviewed($conn, $recipe_id, $user_id);
+
+// Fetch all existing reviews
+$reviews = getReviewsByRecipe($conn, $recipe_id);
 
 // Dynamically set page title
 $page_title = htmlspecialchars($recipe['title']) . " - Recipe Sharing Platform";
@@ -156,6 +161,73 @@ include "../includes/header.php";
         </div>
     </div>
 <?php endif; ?>
+
+<div class="card">
+    <h3>Ratings & Reviews</h3>
+    <hr style="margin: 10px 0 20px 0; border: 0; border-top: 1px solid #ddd;">
+
+    <?php if (isset($_SESSION['success'])): ?>
+        <p class="success"><?php echo $_SESSION['success'];
+        unset($_SESSION['success']); ?></p>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['error'])): ?>
+        <p class="error"><?php echo $_SESSION['error'];
+        unset($_SESSION['error']); ?></p>
+    <?php endif; ?>
+
+    <?php if (!$has_reviewed): ?>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #eee; margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px;">Leave a Review</h4>
+            <form action="../controllers/submit_review_action.php" method="POST">
+                <input type="hidden" name="recipe_id" value="<?php echo $recipe_id; ?>">
+
+                <div class="form-group">
+                    <label>Rating:</label>
+                    <select name="rating" required style="width: auto; padding: 8px;">
+                        <option value="5">⭐⭐⭐⭐⭐ (5/5) - Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ (4/5) - Very Good</option>
+                        <option value="3">⭐⭐⭐ (3/5) - Average</option>
+                        <option value="2">⭐⭐ (2/5) - Fair</option>
+                        <option value="1">⭐ (1/5) - Poor</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Review:</label>
+                    <textarea name="review_text" rows="3" placeholder="What did you think of this recipe?" required
+                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                </div>
+
+                <button type="submit" class="btn">Submit Review</button>
+            </form>
+        </div>
+    <?php else: ?>
+        <p style="color: green; font-weight: bold; margin-bottom: 25px;">✓ You have already reviewed this recipe.</p>
+    <?php endif; ?>
+
+    <?php if (empty($reviews)): ?>
+        <p>No reviews yet. Be the first to review this recipe!</p>
+    <?php else: ?>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <?php foreach ($reviews as $review): ?>
+                <div style="border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <strong><?php echo htmlspecialchars($review['reviewer_name']); ?></strong>
+                        <span style="color: #f1c40f;">
+                            <?php echo str_repeat("⭐", $review['rating']); ?>
+                        </span>
+                    </div>
+                    <span style="font-size: 12px; color: #999; display: block; margin-bottom: 8px;">
+                        Posted on <?php echo date("F j, Y", strtotime($review['created_at'])); ?>
+                    </span>
+                    <p style="margin: 0; line-height: 1.5; color: #444;">
+                        <?php echo nl2br(htmlspecialchars($review['review_text'])); ?>
+                    </p>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
 
 <script src="../assets/js/bookmark.js"></script>
 
