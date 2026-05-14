@@ -78,4 +78,6 @@ $shopping_lists = getUserShoppingLists($conn, $user_id);
 
 <?php endif; ?>
 
+<script src="../assets/js/shopping_list_actions.js"></script>
+
 <?php include "../includes/footer.php"; ?>
