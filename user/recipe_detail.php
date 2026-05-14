@@ -5,7 +5,7 @@ require_once "../includes/auth.php";
 require_once "../config/db_connect.php";
 require_once "../models/RecipeModel.php";
 require_once "../models/BookmarkModel.php";
-require_once "../models/ReviewModel.php"; // Added Review Model
+require_once "../models/ReviewModel.php";
 
 // Protect the route
 require_role("user", $base_url);
@@ -49,14 +49,21 @@ include "../includes/header.php";
 ?>
 
 <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <a href="recipes.php" style="color: #e67e22; text-decoration: none;">&larr; Back to Browse</a>
 
-        <button id="bookmark-btn" data-recipe-id="<?php echo $recipe_id; ?>"
-            style="padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; 
-                <?php echo $is_bookmarked ? 'background-color: #c0392b; color: white;' : 'background-color: #ecf0f1; color: #333;'; ?>">
-            <?php echo $is_bookmarked ? '❤️ Saved' : '🤍 Save Recipe'; ?>
-        </button>
+        <div style="display: flex; gap: 10px;">
+            <button id="add-to-list-btn" data-recipe-id="<?php echo $recipe_id; ?>"
+                style="padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; background-color: #3498db; color: white;">
+                🛒 Add to Shopping List
+            </button>
+
+            <button id="bookmark-btn" data-recipe-id="<?php echo $recipe_id; ?>"
+                style="padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; 
+                    <?php echo $is_bookmarked ? 'background-color: #c0392b; color: white;' : 'background-color: #ecf0f1; color: #333;'; ?>">
+                <?php echo $is_bookmarked ? '❤️ Saved' : '🤍 Save Recipe'; ?>
+            </button>
+        </div>
     </div>
     <br>
 
@@ -230,5 +237,6 @@ include "../includes/header.php";
 </div>
 
 <script src="../assets/js/bookmark.js"></script>
+<script src="../assets/js/shopping_list.js"></script>
 
 <?php include "../includes/footer.php"; ?>
