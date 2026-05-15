@@ -1,6 +1,5 @@
 <?php
-// dev/seed_database.php
-// WARNING: This is a developer tool to seed dummy data for testing. 
+// dev/seed_database.php 
 
 require_once '../config/db_connect.php';
 
