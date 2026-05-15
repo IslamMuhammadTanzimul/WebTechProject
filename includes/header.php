@@ -36,6 +36,7 @@ if (!isset($base_url)) {
                         <a href="<?php echo $base_url; ?>user/recipes.php">Recipes</a>
                         <a href="<?php echo $base_url; ?>user/saved.php">Saved</a>
                         <a href="<?php echo $base_url; ?>user/shopping_lists.php">Shopping Lists</a>
+                        <a href="<?php echo $base_url; ?>user/meal_plan.php">Meal Planner</a>
                     <?php } ?>
 
                     <a href="<?php echo $base_url; ?>logout.php">Logout</a>
