@@ -28,7 +28,9 @@ if (!isset($base_url)) {
             </h1>
 
             <nav class="nav-menu">
-                <a href="<?php echo $base_url; ?>index.php">Home</a>
+                <?php if (!is_logged_in() || $_SESSION['role'] != "admin") { ?>
+                    <a href="<?php echo $base_url; ?>index.php">Home</a>
+                <?php } ?>
 
                 <?php if (is_logged_in()) { ?>
                     <?php if ($_SESSION['role'] == "user") { ?>
