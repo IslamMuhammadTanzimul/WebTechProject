@@ -1,22 +1,29 @@
 /* assets/css/style.css */
 
 /* =========================================
-   1. BASE VARIABLES & RESET
+   1. BASE VARIABLES (Minimalist Palette)
    ========================================= */
 :root {
-    --primary: #e67e22;       /* App Orange */
-    --primary-hover: #d35400;
-    --secondary: #2980b9;     /* App Blue */
-    --secondary-hover: #2471a3;
-    --dark: #2c3e50;
-    --light-bg: #f4f7f6;
-    --card-bg: #ffffff;
-    --text-main: #333333;
-    --text-muted: #7f8c8d;
-    --danger: #e74c3c;
-    --success: #27ae60;
+    /* Monochromatic Core */
+    --bg-page: #ffffff;         /* Pure white background */
+    --bg-surface: #f9f9f9;      /* Light grey for subtle separation */
+    --border-light: #eaeaea;    /* Very light grey for borders */
+    --border-dark: #cccccc;     /* Mid grey for inputs */
+    
+    /* Typography */
+    --text-black: #111111;      /* Almost black for headings */
+    --text-dark: #333333;       /* Dark grey for body text */
+    --text-muted: #777777;      /* Grey for secondary info */
+    
+    /* Functional Accents */
+    --accent-blue: #005bb5;     /* Links, primary actions, "Following" */
+    --accent-green: #0d8050;    /* Success states */
+    --accent-red: #d93025;      /* Errors, "Delete", "Saved" heart */
 }
 
+/* =========================================
+   2. RESET & GLOBAL TYPOGRAPHY
+   ========================================= */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -24,49 +31,48 @@
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--light-bg);
-    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-dark);
     line-height: 1.6;
-    padding-bottom: 50px;
+    padding-bottom: 60px;
+    -webkit-font-smoothing: antialiased;
 }
 
 .container {
-    max-width: 1100px;
+    max-width: 1000px; /* Slightly narrower for better reading length */
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
 }
 
-/* =========================================
-   2. TYPOGRAPHY
-   ========================================= */
 h1, h2, h3, h4 {
-    color: var(--dark);
-    margin-bottom: 10px;
+    color: var(--text-black);
     font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
 }
 
 a {
-    color: var(--secondary);
+    color: var(--accent-blue);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
 
 a:hover {
-    color: var(--secondary-hover);
+    color: var(--text-black);
 }
 
 /* =========================================
-   3. NAVIGATION BAR
+   3. NAVIGATION BAR (Clean & Flat)
    ========================================= */
 .main-header {
-    background-color: var(--card-bg);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    padding: 15px 0;
+    background-color: var(--bg-page);
+    border-bottom: 1px solid var(--border-light);
+    padding: 20px 0;
     position: sticky;
     top: 0;
     z-index: 100;
-    margin-bottom: 30px;
+    margin-bottom: 40px; /* Lots of whitespace below header */
 }
 
 .header-flex {
@@ -74,132 +80,136 @@ a:hover {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 16px;
 }
 
 .logo a {
-    color: var(--primary);
-    font-size: 24px;
-    font-weight: 800;
+    color: var(--text-black);
+    font-size: 20px;
+    font-weight: 700;
     letter-spacing: -0.5px;
 }
 
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
     flex-wrap: wrap;
 }
 
 .nav-menu a {
     color: var(--text-muted);
     font-weight: 500;
-    font-size: 15px;
-    padding: 5px 0;
-    position: relative;
+    font-size: 14px;
 }
 
 .nav-menu a:hover {
-    color: var(--primary);
-}
-
-/* Underline animation on hover for nav links */
-.nav-menu a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    display: block;
-    margin-top: 2px;
-    right: 0;
-    background: var(--primary);
-    transition: width 0.3s ease;
-}
-
-.nav-menu a:hover::after {
-    width: 100%;
-    left: 0;
-    background: var(--primary);
+    color: var(--text-black);
 }
 
 /* =========================================
-   4. UI CARDS & LAYOUT
+   4. UI CARDS & LAYOUT (Whitespace & Borders)
    ========================================= */
 .card {
-    background: var(--card-bg);
+    background: var(--bg-page);
     border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0,0,0,0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 32px; /* Increased padding for minimal aesthetic */
+    margin-bottom: 24px;
+    border: 1px solid var(--border-light);
+    transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-/* Subtle lift effect when hovering over recipe grid cards */
+/* Subtle border highlight on hover instead of heavy shadows */
 a .card:hover, .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: var(--border-dark);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02);
+}
+
+/* Override inline background colors set in PHP for the dashboard */
+.card[style*="background: linear-gradient"] {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-light) !important;
+    color: var(--text-black) !important;
+}
+.card[style*="background: linear-gradient"] h1,
+.card[style*="background: linear-gradient"] p {
+    color: var(--text-black) !important;
 }
 
 /* =========================================
-   5. BUTTONS
+   5. BUTTONS (Monochromatic Default, Accent Overrides)
    ========================================= */
 .btn {
     display: inline-block;
-    background-color: var(--primary);
-    color: #fff !important;
+    background-color: var(--text-black);
+    color: #ffffff !important;
     padding: 10px 20px;
-    border: none;
+    border: 1px solid var(--text-black);
     border-radius: 6px;
     cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     text-align: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(230, 126, 34, 0.3);
+    transition: all 0.2s ease;
 }
 
 .btn:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(230, 126, 34, 0.4);
+    background-color: var(--bg-page);
+    color: var(--text-black) !important;
 }
 
 .btn-small {
     display: inline-block;
-    background-color: var(--secondary);
-    color: #fff !important;
+    background-color: transparent;
+    color: var(--text-black) !important;
     padding: 6px 14px;
-    border: none;
+    border: 1px solid var(--border-dark);
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    transition: background-color 0.3s;
+    transition: all 0.2s ease;
 }
 
 .btn-small:hover {
-    background-color: var(--secondary-hover);
+    border-color: var(--text-black);
 }
 
-.btn:disabled {
-    background-color: #bdc3c7 !important;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
+/* Specific Accent Buttons (Using your color rules) */
+.delete-list-btn, 
+button[style*="background-color: #c0392b"] { 
+    background-color: var(--bg-page) !important; 
+    color: var(--accent-red) !important; 
+    border: 1px solid var(--border-light) !important; 
+}
+.delete-list-btn:hover { border-color: var(--accent-red) !important; }
+
+button[style*="background-color: #3498db"], /* Shopping list */
+button[style*="background-color: #2980b9"] { /* Following */
+    background-color: var(--bg-page) !important; 
+    color: var(--accent-blue) !important; 
+    border: 1px solid var(--accent-blue) !important; 
+}
+
+button[style*="background-color: #27ae60"] { /* Success states */
+    background-color: var(--bg-page) !important; 
+    color: var(--accent-green) !important; 
+    border: 1px solid var(--accent-green) !important; 
 }
 
 /* =========================================
    6. FORMS & INPUTS
    ========================================= */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: 500;
-    color: var(--dark);
+    font-size: 14px;
+    color: var(--text-dark);
 }
 
 input[type="text"],
@@ -209,39 +219,85 @@ input[type="number"],
 select,
 textarea {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px 14px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
     font-family: inherit;
-    font-size: 15px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 14px;
+    color: var(--text-black);
+    transition: all 0.2s ease;
 }
 
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--secondary);
-    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1);
+    background-color: var(--bg-page);
+    border-color: var(--text-black);
 }
 
 /* =========================================
-   7. ALERTS & MESSAGES
+   7. ALERTS & MESSAGES (Minimal style)
    ========================================= */
-.success {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 12px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    border: 1px solid #c3e6cb;
+.success, .error {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.success {
+    background-color: #f0fdf4;
+    color: var(--accent-green);
+    border: 1px solid #bbf7d0;
 }
 
 .error {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 12px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    border: 1px solid #f5c6cb;
-    font-weight: 500;
+    background-color: #fef2f2;
+    color: var(--accent-red);
+    border: 1px solid #fecaca;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border-light);
+    margin: 24px 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* This class will push the footer to the bottom */
+.site-footer {
+    margin-top: auto; 
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid var(--border-light);
+    color: var(--text-muted);
+    font-size: 14px;
+    background-color: var(--bg-page);
+}
+
+/* Landing Page Utility Classes */
+.text-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
 }

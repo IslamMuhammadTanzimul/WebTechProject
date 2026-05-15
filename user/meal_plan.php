@@ -65,7 +65,7 @@ $meals = ['breakfast', 'lunch', 'dinner', 'snack'];
 <div class="card" style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 800px;">
         <thead>
-            <tr style="background-color: #34495e; color: white;">
+            <tr style="background-color: #f9f9f9; color: #111; border-bottom: 2px solid #ccc;">
                 <th style="padding: 12px; border: 1px solid #ddd;">Day</th>
                 <?php foreach ($meals as $meal): ?>
                     <th style="padding: 12px; border: 1px solid #ddd;">
