@@ -15,7 +15,11 @@ if (!isset($base_url)) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?></title>
+    <!-- Add this -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/style.css">
 </head>
 
@@ -24,7 +28,9 @@ if (!isset($base_url)) {
     <header class="main-header">
         <div class="container header-flex">
             <h1 class="logo">
-                <a href="<?php echo $base_url; ?>index.php">Recipe Sharing Platform</a>
+                <a href="<?php echo $base_url; ?>index.php">
+                    Recipe<span style="color:var(--rust)">.</span>Platform
+                </a>
             </h1>
 
             <nav class="nav-menu">
@@ -36,6 +42,11 @@ if (!isset($base_url)) {
                         <a href="<?php echo $base_url; ?>user/recipes.php">Recipes</a>
                         <a href="<?php echo $base_url; ?>user/saved.php">Saved</a>
                         <a href="<?php echo $base_url; ?>user/shopping_lists.php">Shopping Lists</a>
+                    <?php } elseif ($_SESSION['role'] == "admin") { ?>
+                        <a href="<?php echo $base_url; ?>admin/dashboard.php">Dashboard</a>
+                        <a href="<?php echo $base_url; ?>admin/users.php">Users</a>
+                        <a href="<?php echo $base_url; ?>admin/recipes.php">Recipes</a>
+                        <a href="<?php echo $base_url; ?>admin/featured.php">Featured</a>
                     <?php } ?>
 
                     <a href="<?php echo $base_url; ?>logout.php">Logout</a>
@@ -47,4 +58,4 @@ if (!isset($base_url)) {
         </div>
     </header>
 
-    <main class="container"></main>
+    <main class="container">
