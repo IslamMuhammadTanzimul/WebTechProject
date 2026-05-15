@@ -124,6 +124,7 @@ textarea {
     border-top: 1px solid #ddd;
     text-align: center;
     color: #555;
+<<<<<<< HEAD
 }
 
 /* ============== ADMIN STYLES ============== */
@@ -274,4 +275,6 @@ table tr:hover {
 
 .setting-row {
     margin-bottom: 18px;
+=======
+>>>>>>> parent of 3630330 (chore: consolidate code changes for improved clarity and maintainability)
 }

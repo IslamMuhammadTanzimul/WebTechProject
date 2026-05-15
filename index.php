@@ -17,12 +17,12 @@ if (is_logged_in()) {
 ?>
 
 <!-- HERO -->
-<div class="card" style="display:flex; flex-wrap:wrap; gap:40px; align-items:center; padding:48px; background-color: blue;">
-    <div style="flex:1 1 300px;background-color: red;">
+<div class="card" style="display:flex; flex-wrap:wrap; gap:40px; align-items:center; padding:48px;">
+    <div>
         <span style="display:inline-block; background:var(--sage-light); 
                      color:var(--sage); font-size:0.75rem; font-weight:500;
                      letter-spacing:0.08em; text-transform:uppercase;
-                     padding:5px 14px; border-radius:100px; margin-bottom:20px; background-color: red;">
+                     padding:5px 14px; border-radius:100px; margin-bottom:20px;">
             ✦ Community Recipe Platform
         </span>
         <h1 style="font-family:'Playfair Display',serif; font-size:2.4rem;
@@ -47,16 +47,18 @@ if (is_logged_in()) {
                 <a href="login.php" class="btn btn-secondary">Login</a>
             </div>
         <?php endif; ?>
+
+    </div>
+    <div style="border-radius:var(--radius-lg); overflow:hidden; 
+            height:380px; width:50%; box-shadow:var(--shadow-md);">
+        <img src="assets/uploads/hero.jpg"
+            alt="Delicious recipes"
+            style="width:100%; height:100%; object-fit:cover;">
     </div>
 </div>
 
 <!-- Recipe preview cards -->
-<div style="border-radius:var(--radius-lg); overflow:hidden; 
-            height:380px; box-shadow:var(--shadow-md);">
-    <img src="assets/uploads/hero.jpg"
-        alt="Delicious recipes"
-        style="width:100%; height:100%; object-fit:cover;">
-</div>
+
 
 <!-- FEATURES -->
 <div style="margin-bottom:20px;">
