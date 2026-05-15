@@ -6,6 +6,7 @@ require_once "../config/db_connect.php";
 require_once "../models/RecipeModel.php";
 require_once "../models/BookmarkModel.php";
 require_once "../models/ReviewModel.php";
+require_once "../models/FollowModel.php"; // Added Follow Model
 
 // Protect the route
 require_role("user", $base_url);
@@ -39,6 +40,12 @@ $nutrition = getRecipeNutrition($conn, $recipe_id);
 // Check states for the current user
 $is_bookmarked = isBookmarked($conn, $user_id, $recipe_id);
 $has_reviewed = hasUserReviewed($conn, $recipe_id, $user_id);
+
+// Check if we are following the author (Only if they are a Verified Chef)
+$is_following = false;
+if ($recipe['chef_verified']) {
+    $is_following = isFollowing($conn, $user_id, $recipe['author_id']);
+}
 
 // Fetch all existing reviews
 $reviews = getReviewsByRecipe($conn, $recipe_id);
@@ -75,11 +82,21 @@ include "../includes/header.php";
 
     <h1 style="margin-top: 15px;"><?php echo htmlspecialchars($recipe['title']); ?></h1>
 
-    <p style="color: #555; font-size: 16px; margin-top: 5px;">
-        Created by <strong><?php echo htmlspecialchars($recipe['author_name']); ?></strong>
-        <?php if ($recipe['chef_verified'])
-            echo "<span style='color: #2980b9;' title='Verified Chef'>✓</span>"; ?>
-    </p>
+    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+        <p style="color: #555; font-size: 16px; margin: 0;">
+            Created by <strong><?php echo htmlspecialchars($recipe['author_name']); ?></strong>
+            <?php if ($recipe['chef_verified'])
+                echo "<span style='color: #2980b9;' title='Verified Chef'>✓</span>"; ?>
+        </p>
+
+        <?php if ($recipe['chef_verified'] && $recipe['author_id'] != $user_id): ?>
+            <button id="follow-chef-btn" data-chef-id="<?php echo $recipe['author_id']; ?>"
+                style="padding: 4px 10px; border: 1px solid #2980b9; border-radius: 4px; cursor: pointer; font-size: 12px; transition: 0.3s; font-weight: bold;
+                    <?php echo $is_following ? 'background-color: #2980b9; color: white;' : 'background-color: white; color: #2980b9;'; ?>">
+                <?php echo $is_following ? 'Following' : '+ Follow'; ?>
+            </button>
+        <?php endif; ?>
+    </div>
 
     <div
         style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #eee;">
@@ -238,5 +255,6 @@ include "../includes/header.php";
 
 <script src="../assets/js/bookmark.js"></script>
 <script src="../assets/js/shopping_list.js"></script>
+<script src="../assets/js/follow_chef.js"></script>
 
 <?php include "../includes/footer.php"; ?>
