@@ -1,6 +1,6 @@
 <?php
 $host   = "localhost";
-$db     = "p11_recipe_platform";
+$db     = "recipe_share_db";
 $user   = "root";
 $pass   = "";
 

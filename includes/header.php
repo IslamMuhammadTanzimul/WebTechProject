@@ -1,52 +1,33 @@
 <?php
-require_once __DIR__ . "/auth.php";
-
-if (!isset($page_title)) {
-    $page_title = "Recipe Sharing Platform";
-}
-
-if (!isset($base_url)) {
-    $base_url = "";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
-    <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo isset($page_title) ? $page_title . " | Recipe Platform" : "Recipe Platform"; ?></title>
+    <link rel="stylesheet" href="/WebTechProject/assets/css/admin.css">
 </head>
 
 <body>
-
-    <header class="main-header">
-        <div class="container header-flex">
-            <h1 class="logo">
-                <a href="<?php echo $base_url; ?>index.php">Recipe Sharing Platform</a>
-            </h1>
-
-            <nav class="nav-menu">
-                <?php if (!is_logged_in() || $_SESSION['role'] != "admin") { ?>
-                    <a href="<?php echo $base_url; ?>index.php">Home</a>
-                <?php } ?>
-
-                <?php if (is_logged_in()) { ?>
-                    <?php if ($_SESSION['role'] == "user") { ?>
-                        <a href="<?php echo $base_url; ?>user/dashboard.php">Dashboard</a>
-                        <a href="<?php echo $base_url; ?>user/recipes.php">Recipes</a>
-                        <a href="<?php echo $base_url; ?>user/saved.php">Saved</a>
-                        <a href="<?php echo $base_url; ?>user/shopping_lists.php">Shopping Lists</a>
-                    <?php } ?>
-
-                    <a href="<?php echo $base_url; ?>logout.php">Logout</a>
-                <?php } else { ?>
-                    <a href="<?php echo $base_url; ?>login.php">Login</a>
-                    <a href="<?php echo $base_url; ?>register.php" class="btn-small">Register</a>
-                <?php } ?>
-            </nav>
-        </div>
-    </header>
-
-    <main class="container"></main>
+    <div class="wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-brand">Recipe Platform</div>
+            <ul class="sidebar-nav">
+                <li><a href="/WebTechProject/admin/dashboard.php">Dashboard</a></li>
+                <li><a href="/WebTechProject/admin/users.php">Users</a></li>
+                <li><a href="/WebTechProject/admin/recipes.php">Recipes</a></li>
+                <li><a href="/WebTechProject/admin/chef_verification.php">Chef Verification</a></li>
+                <li><a href="/WebTechProject/admin/featured.php">Featured Content</a></li>
+                <li><a href="/WebTechProject/admin/announcements.php">Announcements</a></li>
+                <li><a href="/WebTechProject/admin/settings.php">Settings</a></li>
+                <li><a href="/WebTechProject/admin/moderators.php">Moderation Team</a></li>
+                <li><a href="/WebTechProject/admin/reports.php">Reports</a></li>
+                <li><a href="/WebTechProject/admin/logout.php">Logout</a></li>
+            </ul>
+        </nav>
+        <main class="content">
