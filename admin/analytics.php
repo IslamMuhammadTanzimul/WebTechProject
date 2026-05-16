@@ -13,7 +13,7 @@ require_once "../models/ReviewModel.php";
 
 $byCuisine = getRecipeCountByCuisine($conn);
 $topChefs = getMostFollowedChefs($conn);
-
+$mostActive = getMostActiveUsers($conn);
 ?>
 <h2>Platform Analytics</h2>
 
