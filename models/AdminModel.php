@@ -253,3 +253,30 @@ function set_chef_of_the_week($conn, $user_id)
     mysqli_stmt_bind_param($stmt, "ss", $user_id, $user_id);
     return mysqli_stmt_execute($stmt);
 }
+function get_announcements($conn)
+{
+    $sql  = "SELECT a.*, u.name as created_by_name
+             FROM announcements a
+             JOIN users u ON a.created_by = u.id
+             ORDER BY a.created_at DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function create_announcement($conn, $title, $message, $created_by)
+{
+    $sql  = "INSERT INTO announcements (title, message, created_by) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $title, $message, $created_by);
+    return mysqli_stmt_execute($stmt);
+}
+
+function delete_announcement($conn, $id)
+{
+    $sql  = "DELETE FROM announcements WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    return mysqli_stmt_execute($stmt);
+}
