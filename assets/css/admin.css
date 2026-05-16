@@ -1,0 +1,176 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #333;
+}
+
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #2c2c2c;
+  color: #ccc;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  padding: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  border-bottom: 1px solid #444;
+}
+
+.sidebar-nav {
+  list-style: none;
+  margin-top: 10px;
+}
+
+.sidebar-nav li a {
+  display: block;
+  padding: 12px 20px;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.sidebar-nav li a:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+h1,
+h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+}
+
+table th,
+table td {
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table th {
+  background: #f0f0f0;
+}
+
+.btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: #4a90d9;
+  color: #fff;
+}
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+}
+.btn-warning {
+  background: #e67e22;
+  color: #fff;
+}
+.btn-success {
+  background: #27ae60;
+  color: #fff;
+}
+
+.alert {
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.alert-success {
+  background: #dff0d8;
+  color: #3c763d;
+}
+.alert-error {
+  background: #f2dede;
+  color: #a94442;
+}
+
+.card {
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.stat-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.stat-box h3 {
+  font-size: 28px;
+  color: #4a90d9;
+}
+
+.stat-box p {
+  font-size: 13px;
+  color: #777;
+  margin-top: 4px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 12px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
