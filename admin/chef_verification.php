@@ -55,7 +55,8 @@ require_once "../includes/header.php";
                         data-id="<?php echo $req['id']; ?>"
                         data-user-id="<?php echo $req['user_id']; ?>"
                         data-name="<?php echo htmlspecialchars($req['name']); ?>"
-                        data-status="<?php echo $req['status']; ?>">
+                        data-status="<?php echo $req['status']; ?>"
+                        data-user-role="<?php echo $req['user_role']; ?>">
                         <td><?php echo $req['id']; ?></td>
                         <td><?php echo htmlspecialchars($req['name']); ?></td>
                         <td><?php echo htmlspecialchars($req['username']); ?></td>
@@ -113,6 +114,7 @@ require_once "../includes/header.php";
             const userId = this.dataset.userId;
             const name = this.dataset.name;
             const status = this.dataset.status;
+            const userRole = this.dataset.userRole;
 
             document.getElementById('selected-name').textContent = name;
 
@@ -126,7 +128,7 @@ require_once "../includes/header.php";
                 document.getElementById('btn-approve').href = `${base}?action=approve&id=${id}&user_id=${userId}`;
                 document.getElementById('btn-reject').style.display = 'inline-block';
                 document.getElementById('btn-reject').href = `${base}?action=reject&id=${id}`;
-            } else if (status === 'approved') {
+            } else if (status === 'approved' && userRole === 'chef') {
                 document.getElementById('btn-revoke').style.display = 'inline-block';
                 document.getElementById('btn-revoke').href = `${base}?action=revoke&user_id=${userId}`;
             }

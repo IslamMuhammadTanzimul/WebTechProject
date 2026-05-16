@@ -61,13 +61,14 @@ function update_user_role($conn, $id, $role)
     mysqli_stmt_bind_param($stmt, "si", $role, $id);
     return mysqli_stmt_execute($stmt);
 }
-function get_verification_requests($conn, $status = "") {
+function get_verification_requests($conn, $status = "")
+{
     if ($status) {
-        $sql  = "SELECT cvr.*, u.name, u.username, u.email FROM chef_verification_requests cvr JOIN users u ON cvr.user_id = u.id WHERE cvr.status = ? ORDER BY cvr.submitted_at DESC";
+        $sql  = "SELECT cvr.*, u.name, u.username, u.email, u.role as user_role FROM chef_verification_requests cvr JOIN users u ON cvr.user_id = u.id WHERE cvr.status = ? ORDER BY cvr.submitted_at DESC";
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "s", $status);
     } else {
-        $sql  = "SELECT cvr.*, u.name, u.username, u.email FROM chef_verification_requests cvr JOIN users u ON cvr.user_id = u.id ORDER BY cvr.submitted_at DESC";
+        $sql  = "SELECT cvr.*, u.name, u.username, u.email, u.role as user_role FROM chef_verification_requests cvr JOIN users u ON cvr.user_id = u.id ORDER BY cvr.submitted_at DESC";
         $stmt = mysqli_prepare($conn, $sql);
     }
     mysqli_stmt_execute($stmt);
@@ -75,7 +76,8 @@ function get_verification_requests($conn, $status = "") {
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function approve_chef($conn, $user_id, $request_id, $admin_id) {
+function approve_chef($conn, $user_id, $request_id, $admin_id)
+{
     // update user role to chef
     $sql  = "UPDATE users SET role = 'chef', chef_verified = 1 WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
@@ -89,16 +91,87 @@ function approve_chef($conn, $user_id, $request_id, $admin_id) {
     return mysqli_stmt_execute($stmt);
 }
 
-function reject_chef_request($conn, $request_id, $admin_id) {
+function reject_chef_request($conn, $request_id, $admin_id)
+{
     $sql  = "UPDATE chef_verification_requests SET status = 'rejected', reviewed_by = ? WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "ii", $admin_id, $request_id);
     return mysqli_stmt_execute($stmt);
 }
 
-function revoke_chef($conn, $user_id) {
+function revoke_chef($conn, $user_id, $admin_id)
+{
+    // demote user
     $sql  = "UPDATE users SET role = 'user', chef_verified = 0 WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+
+    // update request status
+    $sql  = "UPDATE chef_verification_requests SET status = 'rejected', reviewed_by = ? WHERE user_id = ? AND status = 'approved'";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $admin_id, $user_id);
+    return mysqli_stmt_execute($stmt);
+}
+
+
+
+function get_all_recipes($conn, $filters = [])
+{
+    $sql  = "SELECT r.id, r.title, r.status, r.view_count, r.created_at,
+                    u.name as author_name,
+                    c.name as cuisine_name,
+                    d.name as diet_name
+             FROM recipes r
+             JOIN users u ON r.author_id = u.id
+             LEFT JOIN cuisines c ON r.cuisine_id = c.id
+             LEFT JOIN diet_types d ON r.diet_type_id = d.id
+             WHERE 1=1";
+
+    $params = [];
+    $types  = "";
+
+    if (!empty($filters['author'])) {
+        $sql     .= " AND u.name LIKE ?";
+        $params[] = "%" . $filters['author'] . "%";
+        $types   .= "s";
+    }
+
+    if (!empty($filters['cuisine'])) {
+        $sql     .= " AND c.name LIKE ?";
+        $params[] = "%" . $filters['cuisine'] . "%";
+        $types   .= "s";
+    }
+
+    if (!empty($filters['diet'])) {
+        $sql     .= " AND d.name LIKE ?";
+        $params[] = "%" . $filters['diet'] . "%";
+        $types   .= "s";
+    }
+
+    if (!empty($filters['status'])) {
+        $sql     .= " AND r.status = ?";
+        $params[] = $filters['status'];
+        $types   .= "s";
+    }
+
+    $sql .= " ORDER BY r.created_at DESC";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function delete_recipe($conn, $id)
+{
+    $sql  = "DELETE FROM recipes WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
     return mysqli_stmt_execute($stmt);
 }
