@@ -175,3 +175,81 @@ function delete_recipe($conn, $id)
     mysqli_stmt_bind_param($stmt, "i", $id);
     return mysqli_stmt_execute($stmt);
 }
+function get_featured_recipes($conn)
+{
+    $sql  = "SELECT r.id, r.title, u.name as author_name, c.name as cuisine_name
+             FROM recipes r
+             JOIN users u ON r.author_id = u.id
+             LEFT JOIN cuisines c ON r.cuisine_id = c.id
+             WHERE r.is_featured = 1
+             ORDER BY r.created_at DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function get_published_recipes($conn)
+{
+    $sql  = "SELECT r.id, r.title, u.name as author_name
+             FROM recipes r
+             JOIN users u ON r.author_id = u.id
+             WHERE r.status = 'published' AND r.is_featured = 0
+             ORDER BY r.created_at DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function set_featured_recipe($conn, $id)
+{
+    $sql  = "UPDATE recipes SET is_featured = 1 WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    return mysqli_stmt_execute($stmt);
+}
+
+function unset_featured_recipe($conn, $id)
+{
+    $sql  = "UPDATE recipes SET is_featured = 0 WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    return mysqli_stmt_execute($stmt);
+}
+
+function count_featured_recipes($conn)
+{
+    $result = mysqli_query($conn, "SELECT COUNT(*) as count FROM recipes WHERE is_featured = 1");
+    return mysqli_fetch_assoc($result)['count'];
+}
+
+function get_chef_of_the_week($conn)
+{
+    $sql  = "SELECT u.id, u.name, u.username FROM users u
+             JOIN platform_settings ps ON ps.setting_key = 'chef_of_the_week'
+             WHERE u.id = ps.setting_value";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($result);
+}
+
+function get_all_chefs($conn)
+{
+    $sql  = "SELECT id, name, username FROM users WHERE role = 'chef' AND is_active = 1 ORDER BY name ASC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function set_chef_of_the_week($conn, $user_id)
+{
+    $sql  = "INSERT INTO platform_settings (setting_key, setting_value)
+             VALUES ('chef_of_the_week', ?)
+             ON DUPLICATE KEY UPDATE setting_value = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $user_id, $user_id);
+    return mysqli_stmt_execute($stmt);
+}
