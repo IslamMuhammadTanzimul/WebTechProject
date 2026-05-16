@@ -74,7 +74,7 @@ require_once "../includes/header.php";
 <div class="card" id="action-panel" style="display: none;">
     <p style="margin-bottom: 12px; font-size: 14px;">Selected: <strong id="selected-name"></strong></p>
     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <a id="btn-view" href="#" class="btn btn-primary">View</a>
+        <!-- <a id="btn-view" href="#" class="btn btn-primary">View</a> -->
         <a id="btn-activate" href="#" class="btn btn-success" style="display:none;">Activate</a>
         <a id="btn-deactivate" href="#" class="btn btn-warning" style="display:none;">Deactivate</a>
         <a id="btn-promote" href="#" class="btn btn-primary" style="display:none;">Make Moderator</a>
@@ -112,7 +112,7 @@ require_once "../includes/header.php";
             const isSelf = this.dataset.self === '1';
 
             document.getElementById('selected-name').textContent = name;
-            document.getElementById('btn-view').href = `view_user.php?id=${id}`;
+            //document.getElementById('btn-view').href = `view_user.php?id=${id}`;
 
             // reset buttons
             ['btn-activate', 'btn-deactivate', 'btn-promote', 'btn-demote'].forEach(b => {
