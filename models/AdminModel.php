@@ -299,3 +299,132 @@ function update_setting($conn, $key, $value)
     mysqli_stmt_bind_param($stmt, "sss", $key, $value, $value);
     return mysqli_stmt_execute($stmt);
 }
+function get_moderators($conn)
+{
+    $sql  = "SELECT u.id, u.name, u.username, u.email, u.is_active, u.created_at,
+                    COUNT(DISTINCT cr.id) as reports_processed
+             FROM users u
+             LEFT JOIN content_reports cr ON cr.moderator_note IS NOT NULL
+             AND EXISTS (
+                 SELECT 1 FROM content_reports cr2
+                 WHERE cr2.id = cr.id AND cr2.status = 'resolved'
+             )
+             WHERE u.role = 'moderator'
+             GROUP BY u.id
+             ORDER BY u.created_at DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function get_moderator_activity($conn, $moderator_id)
+{
+    $sql  = "SELECT cr.id, cr.entity_type, cr.reason, cr.status,
+                    cr.moderator_note, cr.created_at
+             FROM content_reports cr
+             WHERE cr.status = 'resolved'
+             ORDER BY cr.created_at DESC
+             LIMIT 20";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+function get_recipes_per_cuisine_per_month($conn)
+{
+    $sql  = "SELECT c.name as cuisine_name,
+                    DATE_FORMAT(r.created_at, '%b %Y') as month,
+                    COUNT(*) as total
+             FROM recipes r
+             JOIN cuisines c ON r.cuisine_id = c.id
+             WHERE r.created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+             GROUP BY c.name, DATE_FORMAT(r.created_at, '%Y-%m')
+             ORDER BY DATE_FORMAT(r.created_at, '%Y-%m') DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function get_most_active_users($conn)
+{
+    $sql  = "SELECT u.name, u.username, u.role,
+                    COUNT(DISTINCT r.id)  as recipes,
+                    COUNT(DISTINCT rv.id) as reviews,
+                    COUNT(DISTINCT b.id)  as bookmarks
+             FROM users u
+             LEFT JOIN recipes r  ON r.author_id  = u.id
+             LEFT JOIN reviews rv ON rv.user_id    = u.id
+             LEFT JOIN bookmarks b ON b.user_id    = u.id
+             GROUP BY u.id
+             ORDER BY (COUNT(DISTINCT r.id) + COUNT(DISTINCT rv.id) + COUNT(DISTINCT b.id)) DESC
+             LIMIT 10";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function get_most_followed_chefs($conn)
+{
+    $sql  = "SELECT u.name, u.username,
+                    COUNT(f.id) as followers
+             FROM users u
+             JOIN follows f ON f.chef_id = u.id
+             WHERE u.role = 'chef'
+             GROUP BY u.id
+             ORDER BY followers DESC
+             LIMIT 10";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function get_avg_rating_by_cuisine($conn)
+{
+    $sql  = "SELECT c.name as cuisine_name,
+                    ROUND(AVG(rv.rating), 2) as avg_rating,
+                    COUNT(rv.id) as total_reviews
+             FROM reviews rv
+             JOIN recipes r  ON rv.recipe_id = r.id
+             JOIN cuisines c ON r.cuisine_id  = c.id
+             GROUP BY c.name
+             ORDER BY avg_rating DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function get_user_growth_report($conn)
+{
+    $sql  = "SELECT role,
+                    DATE_FORMAT(created_at, '%b %Y') as month,
+                    COUNT(*) as total
+             FROM users
+             WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+             GROUP BY role, DATE_FORMAT(created_at, '%Y-%m')
+             ORDER BY DATE_FORMAT(created_at, '%Y-%m') DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function get_content_creation_report($conn)
+{
+    $sql  = "SELECT DATE_FORMAT(created_at, '%b %Y') as month,
+                    COUNT(*) as total_recipes,
+                    SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published,
+                    SUM(CASE WHEN status = 'draft'     THEN 1 ELSE 0 END) as drafts
+             FROM recipes
+             WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+             GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+             ORDER BY DATE_FORMAT(created_at, '%Y-%m') DESC";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
