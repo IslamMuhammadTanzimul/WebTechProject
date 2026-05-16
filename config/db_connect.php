@@ -1,13 +1,11 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "recipe_share_db";
-// notOO oriented
-$conn = new mysqli($host, $username, $password, $database);
+$host   = "localhost";
+$db     = "p11_recipe_platform";
+$user   = "root";
+$pass   = "";
 
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
+$conn = mysqli_connect($host, $user, $pass, $db);
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
-
-$conn->set_charset("utf8mb4");
