@@ -12,6 +12,7 @@ require_once "../models/BookmarkModel.php";
 require_once "../models/ReviewModel.php";
 
 $byCuisine = getRecipeCountByCuisine($conn);
+$topChefs = getMostFollowedChefs($conn);
 
 ?>
 <h2>Platform Analytics</h2>
