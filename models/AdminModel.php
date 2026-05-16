@@ -280,3 +280,22 @@ function delete_announcement($conn, $id)
     mysqli_stmt_bind_param($stmt, "i", $id);
     return mysqli_stmt_execute($stmt);
 }
+function get_all_settings($conn)
+{
+    $result   = mysqli_query($conn, "SELECT setting_key, setting_value FROM platform_settings");
+    $settings = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+    return $settings;
+}
+
+function update_setting($conn, $key, $value)
+{
+    $sql  = "INSERT INTO platform_settings (setting_key, setting_value)
+             VALUES (?, ?)
+             ON DUPLICATE KEY UPDATE setting_value = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "sss", $key, $value, $value);
+    return mysqli_stmt_execute($stmt);
+}
