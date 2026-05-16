@@ -1,66 +1,40 @@
 <?php
-$page_title = "Admin Dashboard — Recipe Sharing Platform";
-$base_url = "../";
-include "../includes/header.php";
-
-require_once "../config/db_connect.php";
 require_once "../includes/auth.php";
-require_role('admin', '../');
-require_once "../models/StatsModel.php";
+require_once "../config/db_connect.php";
 
-$stats = getDashboardStats($conn);
+require_admin();
+
+$page_title = "Dashboard";
+require_once "../includes/header.php";
 ?>
 
-<h2>Admin Dashboard</h2>
+<h1>Admin Dashboard</h1>
 
 <div class="stats-grid">
-    <div class="stat-card">
-        <span class="stat-number"><?php echo $stats['total_users']; ?></span>
-        <span class="stat-label">Total Users</span>
-        <div class="stat-breakdown">
-            <?php echo $stats['users_by_role']['user']; ?> users <br>
-            <?php echo $stats['users_by_role']['chef']; ?> chefs <br>
-            <?php echo $stats['users_by_role']['moderator']; ?> mods <br>
-            <?php echo $stats['users_by_role']['admin']; ?> admins
-        </div>
+    <div class="stat-box">
+        <h3>-</h3>
+        <p>Total Users</p>
     </div>
-    <div class="stat-card">
-        <span class="stat-number"><?php echo $stats['published_recipes']; ?></span>
-        <span class="stat-label">Published Recipes</span>
+    <div class="stat-box">
+        <h3>-</h3>
+        <p>Total Recipes</p>
     </div>
-    <div class="stat-card">
-        <span class="stat-number"><?php echo $stats['active_chefs']; ?></span>
-        <span class="stat-label">Active Chefs</span>
+    <div class="stat-box">
+        <h3>-</h3>
+        <p>Active Chefs</p>
     </div>
-    <div class="stat-card">
-        <span class="stat-number"><?php echo $stats['new_this_week']; ?></span>
-        <span class="stat-label">New This Week</span>
+    <div class="stat-box">
+        <h3>-</h3>
+        <p>New This Week</p>
     </div>
-    <div class="stat-card">
-        <span class="stat-number"><?php echo $stats['total_reviews']; ?></span>
-        <span class="stat-label">Total Reviews</span>
+    <div class="stat-box">
+        <h3>-</h3>
+        <p>Total Reviews</p>
     </div>
-    <div class="stat-card">
-        <span class="stat-number"><?php echo $stats['pending_verifications']; ?></span>
-        <span class="stat-label">Pending Verifications</span>
+    <div class="stat-box">
+        <h3>-</h3>
+        <p>Pending Verifications</p>
     </div>
 </div>
 
-<div class="card">
-    <h3>Quick Actions</h3>
-    <div class="quick-actions">
-        <a href="users.php" class="btn">Manage Users</a>
-        <a href="recipes.php" class="btn">Manage Recipes</a>
-        <a href="featured.php" class="btn">Featured Content</a>
-        <a href="announcements.php" class="btn">Post Announcement</a>
-    </div>
-</div>
-
-<div class="card">
-    <h3>Recent Users <small>(via AJAX)</small></h3>
-    <div id="recentUsers">
-        <p>Loading...</p>
-    </div>
-</div>
-
-<?php include "../includes/footer.php"; ?>
+<?php require_once "../includes/footer.php"; ?>
