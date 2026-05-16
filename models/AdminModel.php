@@ -61,3 +61,44 @@ function update_user_role($conn, $id, $role)
     mysqli_stmt_bind_param($stmt, "si", $role, $id);
     return mysqli_stmt_execute($stmt);
 }
+function get_verification_requests($conn, $status = "") {
+    if ($status) {
+        $sql  = "SELECT cvr.*, u.name, u.username, u.email FROM chef_verification_requests cvr JOIN users u ON cvr.user_id = u.id WHERE cvr.status = ? ORDER BY cvr.submitted_at DESC";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $status);
+    } else {
+        $sql  = "SELECT cvr.*, u.name, u.username, u.email FROM chef_verification_requests cvr JOIN users u ON cvr.user_id = u.id ORDER BY cvr.submitted_at DESC";
+        $stmt = mysqli_prepare($conn, $sql);
+    }
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function approve_chef($conn, $user_id, $request_id, $admin_id) {
+    // update user role to chef
+    $sql  = "UPDATE users SET role = 'chef', chef_verified = 1 WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+
+    // update request status
+    $sql  = "UPDATE chef_verification_requests SET status = 'approved', reviewed_by = ? WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $admin_id, $request_id);
+    return mysqli_stmt_execute($stmt);
+}
+
+function reject_chef_request($conn, $request_id, $admin_id) {
+    $sql  = "UPDATE chef_verification_requests SET status = 'rejected', reviewed_by = ? WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $admin_id, $request_id);
+    return mysqli_stmt_execute($stmt);
+}
+
+function revoke_chef($conn, $user_id) {
+    $sql  = "UPDATE users SET role = 'user', chef_verified = 0 WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    return mysqli_stmt_execute($stmt);
+}
