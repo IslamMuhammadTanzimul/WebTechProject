@@ -3,6 +3,10 @@ require_once "../includes/auth.php";
 require_once "../config/db_connect.php";
 require_once "../models/AdminModel.php";
 
+
+// null colascating
+$conn = $conn ?? ($pdo ?? null);
+
 require_admin();
 
 $filters = [
@@ -21,19 +25,17 @@ require_once "../includes/header.php";
 <h1>Recipe Management</h1>
 
 <!-- Filters -->
-<form method="GET" style="margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
-    <input type="text" name="author" placeholder="Author" value="<?php echo htmlspecialchars($filters['author']);  ?>" style="width: 160px; margin: 0;">
-    <input type="text" name="cuisine" placeholder="Cuisine" value="<?php echo htmlspecialchars($filters['cuisine']); ?>" style="width: 160px; margin: 0;">
-    <input type="text" name="diet" placeholder="Diet" value="<?php echo htmlspecialchars($filters['diet']);    ?>" style="width: 160px; margin: 0;">
-    <select name="status" style="margin: 0; padding: 8px;">
+<div style="margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+    <input type="text" id="filter-author" placeholder="Author" style="width: 150px; margin: 0;">
+    <input type="text" id="filter-cuisine" placeholder="Cuisine" style="width: 150px; margin: 0;">
+    <input type="text" id="filter-diet" placeholder="Diet" style="width: 150px; margin: 0;">
+    <select id="filter-status" style="margin: 0; padding: 8px;">
         <option value="">All Status</option>
-        <option value="published" <?php echo $filters['status'] === 'published' ? 'selected' : ''; ?>>Published</option>
-        <option value="draft" <?php echo $filters['status'] === 'draft'     ? 'selected' : ''; ?>>Draft</option>
+        <option value="published">Published</option>
+        <option value="draft">Draft</option>
     </select>
-    <button type="submit" class="btn btn-primary">Filter</button>
-    <a href="recipes.php" class="btn btn-warning">Clear</a>
-</form>
-
+    <button onclick="clearFilters()" class="btn btn-warning">Clear</button>
+</div>
 <?php if (isset($_GET['msg'])): ?>
     <div class="alert alert-success"><?php echo htmlspecialchars($_GET['msg']); ?></div>
 <?php endif; ?>
@@ -105,22 +107,97 @@ require_once "../includes/header.php";
 
 <script>
     const base = "/WebTechProject/controllers/admin/RecipeController.php";
+    let filterTimer = null;
 
-    document.querySelectorAll('.recipe-row').forEach(row => {
-        row.addEventListener('click', function() {
-            document.querySelectorAll('.recipe-row').forEach(r => r.classList.remove('selected'));
-            this.classList.add('selected');
+    function attachRowHandlers() {
+        document.querySelectorAll('.recipe-row').forEach(row => {
+            row.addEventListener('click', function() {
+                document.querySelectorAll('.recipe-row').forEach(r => r.classList.remove('selected'));
+                this.classList.add('selected');
 
-            const id = this.dataset.id;
-            const title = this.dataset.title;
+                const id = this.dataset.id;
+                const title = this.dataset.title;
 
-            document.getElementById('selected-title').textContent = title;
+                document.getElementById('selected-title').textContent = title;
+                document.getElementById('btn-delete').href = `${base}?action=delete&id=${id}`;
+                document.getElementById('action-panel').style.display = 'block';
+            });
+        });
+    }
 
-            document.getElementById('btn-delete').href = `${base}?action=delete&id=${id}`;
+    function filterRecipes() {
+        const author = document.getElementById('filter-author').value;
+        const cuisine = document.getElementById('filter-cuisine').value;
+        const diet = document.getElementById('filter-diet').value;
+        const status = document.getElementById('filter-status').value;
 
-            document.getElementById('action-panel').style.display = 'block';
+        const params = new URLSearchParams({
+            author,
+            cuisine,
+            diet,
+            status
+        });
+
+        fetch(`/WebTechProject/api/admin/recipe_filter.php?${params}`)
+            .then(response => response.json())
+            .then(recipes => {
+                const tbody = document.querySelector('#recipes-table tbody');
+                tbody.innerHTML = '';
+
+                if (recipes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8">No recipes found.</td></tr>';
+                    return;
+                }
+
+                recipes.forEach(recipe => {
+                    const date = new Date(recipe.created_at).toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+
+                    const tr = document.createElement('tr');
+                    tr.className = 'recipe-row';
+                    tr.dataset.id = recipe.id;
+                    tr.dataset.title = recipe.title;
+
+                    tr.innerHTML = `
+                        <td>${recipe.id}</td>
+                        <td>${recipe.title}</td>
+                        <td>${recipe.author_name}</td>
+                        <td>${recipe.cuisine_name ?? '-'}</td>
+                        <td>${recipe.diet_name ?? '-'}</td>
+                        <td>${recipe.status.charAt(0).toUpperCase() + recipe.status.slice(1)}</td>
+                        <td>${recipe.view_count}</td>
+                        <td>${date}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                attachRowHandlers();
+                document.getElementById('action-panel').style.display = 'none';
+            })
+            .catch(err => console.error('Filter failed:', err));
+    }
+
+    function clearFilters() {
+        document.getElementById('filter-author').value = '';
+        document.getElementById('filter-cuisine').value = '';
+        document.getElementById('filter-diet').value = '';
+        document.getElementById('filter-status').value = '';
+        filterRecipes();
+    }
+
+    // trigger on input with debounce
+    ['filter-author', 'filter-cuisine', 'filter-diet'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function() {
+            clearTimeout(filterTimer);
+            filterTimer = setTimeout(filterRecipes, 300);
         });
     });
-</script>
 
+    document.getElementById('filter-status').addEventListener('change', filterRecipes);
+
+    attachRowHandlers();
+</script>
 <?php require_once "../includes/footer.php"; ?>
