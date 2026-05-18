@@ -27,7 +27,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a href="/WebTechProject/admin/settings.php">Settings</a></li>
                 <li><a href="/WebTechProject/admin/moderators.php">Moderation Team</a></li>
                 <li><a href="/WebTechProject/admin/reports.php">Reports</a></li>
-                <li><a href="/WebTechProject/admin/logout.php">Logout</a></li>
+                <li><a href="/WebTechProject/logout.php">Logout</a></li>
             </ul>
         </nav>
         <main class="content">

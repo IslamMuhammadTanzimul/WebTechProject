@@ -1,6 +1,7 @@
 <?php
 require_once "../../includes/auth.php";
 require_once "../../config/db_connect.php";
+/** @var mysqli $conn */
 require_once "../../models/AdminModel.php";
 
 require_admin();

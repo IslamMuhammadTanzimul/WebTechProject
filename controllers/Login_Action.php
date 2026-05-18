@@ -3,6 +3,7 @@
 session_start();
 
 require_once "../config/db_connect.php";
+/** @var mysqli $conn */
 require_once "../models/LoginModel.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
