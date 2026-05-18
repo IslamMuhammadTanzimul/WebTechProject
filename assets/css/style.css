@@ -1,33 +1,26 @@
 /* assets/css/style.css */
 
-/* =========================================
-   1. BASE VARIABLES (Minimalist Palette)
-   ========================================= */
 :root {
-    /* Monochromatic Core */
-    --bg-page: #ffffff;         /* Pure white background */
-    --bg-surface: #f9f9f9;      /* Light grey for subtle separation */
-    --border-light: #eaeaea;    /* Very light grey for borders */
-    --border-dark: #cccccc;     /* Mid grey for inputs */
-    
-    /* Typography */
-    --text-black: #111111;      /* Almost black for headings */
-    --text-dark: #333333;       /* Dark grey for body text */
-    --text-muted: #777777;      /* Grey for secondary info */
-    
-    /* Functional Accents */
-    --accent-blue: #005bb5;     /* Links, primary actions, "Following" */
-    --accent-green: #0d8050;    /* Success states */
-    --accent-red: #d93025;      /* Errors, "Delete", "Saved" heart */
+    --bg-page: #ffffff;
+    --bg-surface: #f9f9f9;
+    --border-light: #eaeaea;
+    --border-dark: #cccccc;
+    --text-black: #111111;
+    --text-dark: #333333;
+    --text-muted: #777777;
+    --accent-blue: #005bb5;
+    --accent-green: #0d8050;
+    --accent-red: #d93025;
 }
 
-/* =========================================
-   2. RESET & GLOBAL TYPOGRAPHY
-   ========================================= */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+html {
+    height: 100%;
 }
 
 body {
@@ -35,14 +28,17 @@ body {
     background-color: var(--bg-page);
     color: var(--text-dark);
     line-height: 1.6;
-    padding-bottom: 60px;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
 }
 
 .container {
-    max-width: 1000px; /* Slightly narrower for better reading length */
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 24px;
+    width: 100%;
 }
 
 h1, h2, h3, h4 {
@@ -62,9 +58,6 @@ a:hover {
     color: var(--text-black);
 }
 
-/* =========================================
-   3. NAVIGATION BAR (Clean & Flat)
-   ========================================= */
 .main-header {
     background-color: var(--bg-page);
     border-bottom: 1px solid var(--border-light);
@@ -72,7 +65,7 @@ a:hover {
     position: sticky;
     top: 0;
     z-index: 100;
-    margin-bottom: 40px; /* Lots of whitespace below header */
+    margin-bottom: 40px;
 }
 
 .header-flex {
@@ -107,39 +100,32 @@ a:hover {
     color: var(--text-black);
 }
 
-/* =========================================
-   4. UI CARDS & LAYOUT (Whitespace & Borders)
-   ========================================= */
 .card {
     background: var(--bg-page);
     border-radius: 8px;
-    padding: 32px; /* Increased padding for minimal aesthetic */
+    padding: 32px;
     margin-bottom: 24px;
     border: 1px solid var(--border-light);
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-/* Subtle border highlight on hover instead of heavy shadows */
 a .card:hover, .hover-lift:hover {
     transform: translateY(-2px);
     border-color: var(--border-dark);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02);
 }
 
-/* Override inline background colors set in PHP for the dashboard */
 .card[style*="background: linear-gradient"] {
     background: var(--bg-surface) !important;
     border: 1px solid var(--border-light) !important;
     color: var(--text-black) !important;
 }
+
 .card[style*="background: linear-gradient"] h1,
 .card[style*="background: linear-gradient"] p {
     color: var(--text-black) !important;
 }
 
-/* =========================================
-   5. BUTTONS (Monochromatic Default, Accent Overrides)
-   ========================================= */
 .btn {
     display: inline-block;
     background-color: var(--text-black);
@@ -175,31 +161,30 @@ a .card:hover, .hover-lift:hover {
     border-color: var(--text-black);
 }
 
-/* Specific Accent Buttons (Using your color rules) */
 .delete-list-btn, 
 button[style*="background-color: #c0392b"] { 
     background-color: var(--bg-page) !important; 
     color: var(--accent-red) !important; 
     border: 1px solid var(--border-light) !important; 
 }
-.delete-list-btn:hover { border-color: var(--accent-red) !important; }
 
-button[style*="background-color: #3498db"], /* Shopping list */
-button[style*="background-color: #2980b9"] { /* Following */
+.delete-list-btn:hover { 
+    border-color: var(--accent-red) !important; 
+}
+
+button[style*="background-color: #3498db"],
+button[style*="background-color: #2980b9"] { 
     background-color: var(--bg-page) !important; 
     color: var(--accent-blue) !important; 
     border: 1px solid var(--accent-blue) !important; 
 }
 
-button[style*="background-color: #27ae60"] { /* Success states */
+button[style*="background-color: #27ae60"] { 
     background-color: var(--bg-page) !important; 
     color: var(--accent-green) !important; 
     border: 1px solid var(--accent-green) !important; 
 }
 
-/* =========================================
-   6. FORMS & INPUTS
-   ========================================= */
 .form-group {
     margin-bottom: 20px;
 }
@@ -235,9 +220,6 @@ input:focus, select:focus, textarea:focus {
     border-color: var(--text-black);
 }
 
-/* =========================================
-   7. ALERTS & MESSAGES (Minimal style)
-   ========================================= */
 .success, .error {
     padding: 12px 16px;
     border-radius: 6px;
@@ -266,17 +248,8 @@ hr {
     margin: 24px 0;
 }
 
-html, body {
-    height: 100%;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-}
-
-/* This class will push the footer to the bottom */
 .site-footer {
+    width: 100%; 
     margin-top: auto; 
     text-align: center;
     padding: 30px 0;
@@ -286,7 +259,6 @@ body {
     background-color: var(--bg-page);
 }
 
-/* Landing Page Utility Classes */
 .text-center {
     text-align: center;
     display: flex;

@@ -24,14 +24,6 @@ include "includes/header.php";
         </div>
     </div>
 
-    <div class="card text-center" style="padding: 40px 20px;">
-        <h3>User / Home Cook Features</h3>
-        <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto;">
-            This module includes recipe browsing, AJAX filtering, bookmarks, reviews, shopping lists, meal plans, chef
-            following, and personal activity stats.
-        </p>
-    </div>
-
 </div>
 
 <?php include "includes/footer.php"; ?>
